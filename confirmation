@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Loading Container */
+        .loading-container {
+            text-align: center;
+        }
+
+        /* Loading Bar */
+        .loading-bar {
+            width: 300px;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            margin: 20px auto;
+        }
+
+        .loading-progress {
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0);
+            border-radius: 10px;
+            animation: glow 2s infinite, fill 5s forwards;
+        }
+
+        /* Glowing Effect */
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px #ff0080; }
+            50% { box-shadow: 0 0 20px #ff8c00, 0 0 30px #40e0d0; }
+            100% { box-shadow: 0 0 5px #ff0080; }
+        }
+
+        /* Fill Animation */
+        @keyframes fill {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        /* Loading Text */
+        .loading-text {
+            font-size: 20px;
+            margin-top: 10px;
+            color: inherit; /* Default text color */
+        }
+
+        /* Blur Effect for Background */
+        .blur-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(10px); /* Strong blur effect */
+            z-index: 1;
+            display: none;
+        }
+
+        /* Popup Styles */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+            animation: zoomIn 0.5s ease-in-out;
+        }
+
+        .popup h2 {
+            margin: 0;
+            font-size: 40px;
+            font-weight: bold;
+            color: #4CAF50; /* Green color */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Zoom-in Animation */
+        @keyframes zoomIn {
+            from { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Container -->
+    <div class="loading-container">
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        <div class="loading-text">Loading... 0%</div>
+    </div>
+
+    <!-- Blur Background -->
+    <div class="blur-background" id="blurBackground"></div>
+
+    <!-- Popup for Verification Successful -->
+    <div class="popup" id="successPopup">
+        <h2>Verification Successful ✅</h2>
+    </div>
+
+    <script>
+        // Simulate Loading Progress
+        const loadingProgress = document.querySelector('.loading-progress');
+        const loadingText = document.querySelector('.loading-text');
+        const successPopup = document.getElementById('successPopup');
+        const blurBackground = document.getElementById('blurBackground');
+
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 1;
+            loadingProgress.style.width = `${progress}%`;
+            loadingText.textContent = `Loading... ${progress}%`;
+
+            if (progress >= 100) {
+                clearInterval(interval);
+                loadingText.textContent = "Loading Complete!";
+                showPopup();
+            }
+        }, 50); // Adjust speed of loading
+
+        // Show Popup and Redirect
+        function showPopup() {
+            blurBackground.style.display = "block"; // Show blur background
+            successPopup.style.display = "block"; // Show popup
+            setTimeout(() => {
+                window.location.href = "successful_pending_id77g6545"; // Replace with your redirect link
+            }, 2000); // Redirect after 2 seconds
+        }
+    </script>
+</body>
+</html>

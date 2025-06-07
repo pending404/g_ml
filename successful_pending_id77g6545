@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing Pending</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        
+        body {
+            background-color: #0a0a0a;
+            color: #fff;
+            background-image: url('https://wallpapercave.com/wp/wp6277399.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: -1;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 20px;
+            background-color: rgba(20, 20, 20, 0.8);
+            animation: fadeIn 1s ease-in-out;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+        }
+        
+        .logo {
+            width: auto;
+            max-width: 150px;
+            height: auto;
+            animation: glowLogoBlue 2s infinite alternate;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: auto;
+            max-height: 80px;
+            object-fit: contain;
+        }
+        
+        @keyframes glowLogoBlue {
+            0% { filter: drop-shadow(0 0 5px rgba(66, 103, 178, 0.7)); }
+            100% { filter: drop-shadow(0 0 20px rgba(66, 103, 178, 1)); }
+        }
+        
+        .language-toggle {
+            background: linear-gradient(135deg, #4285F4, #34A853);
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(66, 133, 244, 0.4);
+        }
+        
+        .language-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 133, 244, 0.6);
+        }
+        
+        .language-toggle:active {
+            transform: translateY(1px);
+        }
+        
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            flex: 1;
+        }
+        
+        .text-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        
+        h1 {
+            font-size: 22px;
+            color: #00cc00;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #ddd;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .highlight {
+            color: #4285F4;
+            font-weight: bold;
+        }
+        
+        .english-text {
+            display: block;
+        }
+        
+        .hindi-text {
+            display: none;
+        }
+        
+        /* Loading image animation */
+        .unlock-image {
+            height: 24px;
+            width: auto;
+            animation: loadingBlueGlow 2s infinite;
+        }
+        
+        @keyframes loadingBlueGlow {
+            0% { opacity: 0.7; transform: scale(0.95); filter: drop-shadow(0 0 5px rgba(66, 133, 244, 0.7)); }
+            50% { opacity: 1; transform: scale(1.05); filter: drop-shadow(0 0 15px rgba(66, 133, 244, 1)); }
+            100% { opacity: 0.7; transform: scale(0.95); filter: drop-shadow(0 0 5px rgba(66, 133, 244, 0.7)); }
+        }
+        
+        .countdown-container {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .countdown-title {
+            font-size: 1.3rem;
+            color: #4285F4;
+            margin-bottom: 10px;
+        }
+        
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .countdown-box {
+            background: linear-gradient(135deg, #333, #222);
+            padding: 10px;
+            min-width: 70px;
+        }
+        
+        .countdown-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4285F4;
+        }
+        
+        .countdown-label {
+            font-size: 0.8rem;
+            color: #ddd;
+            margin-top: 5px;
+        }
+        
+        /* Man image with even slower blue glow */
+        .man-image-container {
+            margin-top: 10px;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* Loading image above man.gif with blue glow */
+        .bottom-loading-container {
+            margin: 20px auto 10px auto;
+            text-align: center;
+        }
+        
+        .man-image {
+            max-width: 100%;
+            height: auto;
+            animation: verySlowGlowingEffect 8s infinite alternate;
+        }
+        
+        @keyframes verySlowGlowingEffect {
+            0% { filter: drop-shadow(0 0 5px rgba(66, 133, 244, 0.5)); }
+            100% { filter: drop-shadow(0 0 20px rgba(66, 133, 244, 0.9)); }
+        }
+        
+        @media (max-width: 800px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .content {
+                flex-direction: column;
+                text-align: left;
+            }
+            
+            .text-container {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .language-toggle {
+                margin-top: 15px;
+                align-self: flex-end;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            p {
+                font-size: 16px;
+            }
+            
+            .countdown-timer {
+                flex-wrap: wrap;
+            }
+            
+            .countdown-box {
+                min-width: 60px;
+            }
+            
+            .countdown-value {
+                font-size: 1.5rem;
+            }
+            
+            .man-image {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        
+        @media (min-width: 801px) {
+            .man-image {
+                max-width: 500px;
+                height: auto;
+            }
+            
+            .content {
+                justify-content: space-between;
+                min-height: calc(100vh - 200px);
+            }
+            
+            .countdown-container {
+                margin-top: auto;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Gooooogle Logo">
+            </div>
+            <button class="language-toggle" id="languageToggle">Translate to Hindi</button>
+        </div>
+        
+        <div class="content">
+            <div class="text-container">
+                <div class="english-text" id="englishText">
+                    <h1>Due to some technical reasons, your Gmail account recovery link has not been sent yet. Please don't worry!</h1>
+                    <p>We have started the process to recover your Gmail account. Everything has been set up, and your account will be recovered soon. Normally, it happens instantly, but in your case, it might take some time. You will need to wait for 24 to 48 hours, after which your account should be recovered.</p>
+                    <p>The recovery link will be sent to the contact email you provided. Please check your inbox and spam folder regularly.</p>
+                    <p>If, for any reason, your account is still not recovered, then it will definitely be recovered within 7 days—this is our promise. And if it still doesn't get recovered, you will receive a full refund of the amount you paid. So, there is no need to worry.</p>
+                    <p>Thank you for being a valued part of the Google community!</p>
+                </div>
+                
+                <div class="hindi-text" id="hindiText">
+                    <h1>Kuch takniki karanon ki wajah se, aapka Gmail account recovery link abhi tak nahi bheja gaya hai. Kripya chinta na karein!</h1>
+                    <p>Humne aapke Gmail account ko recover karne ki prakriya shuru kar di hai. Sab kuch set kar diya gaya hai, aur aapka account jald hi recover ho jayega. Aam taur par, ye turant ho jata hai, lekin aapke case me isme kuch samay lag sakta hai. Aapko 24 se 48 ghante tak pratiksha karni hogi, jiske baad aapka account recover ho jayega.</p>
+                    <p>Recovery link aapke dwara pradan kiye gaye contact email par bheja jayega. Kripya apne inbox aur spam folder ko regular check karte rahiye.</p>
+                    <p>Agar kisi karan se aapka account abhi bhi recover nahi hota hai, to ye 7 dinon ke bhitar nishchit roop se recover ho jayega—ye hamara wada hai. Aur yadi fir bhi recover nahi hota hai, to aapko poora paisa wapas kar diya jayega. Isliye, chinta karne ki bilkul zaroorat nahi hai.</p>
+                    <p>Google community ke ek moolyaavan sadasya hone ke liye dhanyavad!</p>
+                </div>
+            </div>
+        
+            <div class="countdown-container">
+                <div class="countdown-title">Your account will be recovered in:</div>
+                <div class="countdown-timer">
+                    <div class="countdown-box">
+                        <div class="countdown-value" id="days">7</div>
+                        <div class="countdown-label">Days</div>
+                    </div>
+                    <div class="countdown-box">
+                        <div class="countdown-value" id="hours">0</div>
+                        <div class="countdown-label">Hours</div>
+                    </div>
+                    <div class="countdown-box">
+                        <div class="countdown-value" id="minutes">0</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-box">
+                        <div class="countdown-value" id="seconds">0</div>
+                        <div class="countdown-label">Seconds</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Loading image above man.gif with blue glow -->
+            <div class="bottom-loading-container">
+                <img class="unlock-image" src="gml.gif" alt="Loading">
+            </div>
+            
+            <!-- Man image with even slower blue glow -->
+            <div class="man-image-container">
+                <img class="man-image" src="man.gif" alt="Man GIF">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Language toggle functionality
+            const languageToggle = document.getElementById('languageToggle');
+            const englishText = document.getElementById('englishText');
+            const hindiText = document.getElementById('hindiText');
+            
+            let isEnglish = true;
+            
+            languageToggle.addEventListener('click', function() {
+                if (isEnglish) {
+                    // Switch to Hindi
+                    englishText.style.display = 'none';
+                    hindiText.style.display = 'block';
+                    languageToggle.textContent = 'Translate to English';
+                } else {
+                    // Switch to English
+                    englishText.style.display = 'block';
+                    hindiText.style.display = 'none';
+                    languageToggle.textContent = 'Translate to Hindi';
+                }
+                
+                isEnglish = !isEnglish;
+            });
+            
+            // Persistent countdown functionality
+            const daysElement = document.getElementById('days');
+            const hoursElement = document.getElementById('hours');
+            const minutesElement = document.getElementById('minutes');
+            const secondsElement = document.getElementById('seconds');
+            
+            // Generate a unique identifier for this device/browser
+            function generateDeviceId() {
+                let deviceId = localStorage.getItem('googleDeviceId');
+                if (!deviceId) {
+                    deviceId = 'device_' + Math.random().toString(36).substring(2, 15);
+                    localStorage.setItem('googleDeviceId', deviceId);
+                }
+                return deviceId;
+            }
+            
+            const deviceId = generateDeviceId();
+            
+            // Check if countdown has already started for this device
+            function getCountdownEndTime() {
+                const savedEndTime = localStorage.getItem(`googleCountdownEnd_${deviceId}`);
+                if (savedEndTime) {
+                    return parseInt(savedEndTime);
+                }
+                
+                // If not started yet, set end time to 7 days from now
+                const endTime = Date.now() + (7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
+                localStorage.setItem(`googleCountdownEnd_${deviceId}`, endTime.toString());
+                return endTime;
+            }
+            
+            const countdownEndTime = getCountdownEndTime();
+            
+            // Update countdown timer
+            function updateCountdown() {
+                const currentTime = Date.now();
+                const timeRemaining = countdownEndTime - currentTime;
+                
+                if (timeRemaining <= 0) {
+                    // Countdown finished
+                    daysElement.textContent = '0';
+                    hoursElement.textContent = '0';
+                    minutesElement.textContent = '0';
+                    secondsElement.textContent = '0';
+                    return;
+                }
+                
+                // Calculate remaining time
+                const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                
+                // Update the display
+                daysElement.textContent = days;
+                hoursElement.textContent = hours;
+                minutesElement.textContent = minutes;
+                secondsElement.textContent = seconds;
+            }
+            
+            // Initial update
+            updateCountdown();
+            
+            // Update countdown every second
+            setInterval(updateCountdown, 1000);
+            
+            // Disable right-click
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>
